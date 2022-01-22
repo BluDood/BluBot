@@ -82,57 +82,6 @@ client.on('messageCreate', async message => {
 		});
 	});
 
-	if (message.content.startsWith("[[") && message.content.includes("]]")) {
-		var tweak = String(message.content).replace("[[", "").split("]]")[0]
-		var page = String(message.content).replace("[[", "").split("]] ")[1] || 1
-		async function getData() {
-			const data = await fetch(`https://api.parcility.co/db/search?q=${tweak}`)
-			return data.json()
-		}
-		var data = await getData()
-		if (data.status === false) return message.reply("Error in finding tweak. Are you sure you spelled it correctly?")
-		var items = data.data.length
-		var currentPage = data.data[page - 1]
-		if (page <= 0) return message.reply("Invalid page number.")
-		if (page > items) return message.reply("Could not find that page!")
-		if (String(currentPage.Icon).includes("file:")) {
-			var icon = currentPage.repo.icon
-		} else {
-			var icon = currentPage.Icon
-		}
-		const embed = {
-			color: "#0064FF",
-			title: `Tweak Search for ${tweak} | Page ${page}`,
-			thumbnail: {
-				url: icon
-			},
-			fields: [
-				{
-					"name": "Name",
-					"value": currentPage.Name
-				},
-				{
-					"name": "Author",
-					"value": currentPage.Author
-				},
-				{
-					"name": "Repo",
-					"value": currentPage.repo.url
-				}
-			],
-			footer: {
-				text: `Page ${page}/${items} | Switch pages with [[${tweak}]] <number>\nPowered by Parcility`,
-			},
-		};
-		const buttons = new MessageActionRow()
-			.addComponents(
-				new MessageButton()
-					.setURL(currentPage.repo.url)
-					.setLabel('Repo')
-					.setStyle('LINK'),
-			);
-		message.reply({ embeds: [embed], components: [buttons] })
-	}
 });
 
 // Events
