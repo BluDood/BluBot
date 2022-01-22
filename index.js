@@ -73,13 +73,9 @@ client.on('messageCreate', async message => {
 	}
 
 	triggers.forEach(trigger => {
-
-		const words = message.content.split(" ")
-		words.forEach(msg => {
-			if (msg.toLowerCase() == trigger.trigger) {
-				message.reply(trigger.response)
-			}
-		});
+		if (message.content.includes(trigger.trigger)) {
+			message.reply(trigger.response)
+		}
 	});
 
 });
