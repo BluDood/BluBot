@@ -72,8 +72,14 @@ client.on('messageCreate', async message => {
 		return message.delete();
 	}
 
-	triggers.forEach(element => {
-		if (message.content.toLowerCase() == element.trigger) return message.reply(element.response);
+	triggers.forEach(trigger => {
+
+		const words = message.content.split(" ")
+		words.forEach(msg => {
+			if (msg.toLowerCase() == trigger.trigger) {
+				message.reply(trigger.response)
+			}
+		});
 	});
 
 	if (message.content.startsWith("[[") && message.content.includes("]]")) {
