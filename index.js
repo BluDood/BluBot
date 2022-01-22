@@ -45,7 +45,8 @@ client.on('error', error => {
 // message action
 client.on('messageCreate', async message => {
 	if (message.author.bot) return
-	if (censored.some(r => message.content.split(" ").includes(r))) {
+	for (i in censored) {
+		if (message.content.includes(censored[i])) {
 		const embed = {
 			color: "#ff8000",
 			title: `Deleted message with censored word from ${message.author.username}`,
@@ -70,6 +71,7 @@ client.on('messageCreate', async message => {
 		};
 		message.guild.channels.cache.get(config.channels.logs).send({ embeds: [embed] })
 		return message.delete();
+		}
 	}
 
 	triggers.forEach(trigger => {
