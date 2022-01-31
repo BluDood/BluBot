@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Client, Collection, Intents, MessageActionRow, MessageButton } = require('discord.js');
 const config = require('./config.json');
+const axios = require('axios')
 const deployCommands = require('./deploy-commands')
 
 const client = new Client({
@@ -41,35 +42,139 @@ client.on('error', error => {
 });
 
 client.on('messageDelete', async message => {
-	const embed = {
-		color: "#ff4545",
-		title: `Message deleted, sent by ${message.author.username}`,
-		description: "If the message was deleted by a moderator, it will show up in the audit logs.",
-		fields: [
-			{
-				"name": "Username",
-				"value": message.author.tag
-			},
-			{
-				"name": "ID",
-				"value": message.author.id
-			},
-			{
-				"name": "Message",
-				"value": message.content
-			},
-			{
-				"name": "Time",
-				"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
-			}
-		]
-	};
+	if (fs.readFileSync('deleted.txt', 'utf-8') === 'true') {
+		return fs.writeFileSync('deleted.txt', 'false', 'utf-8')
+	}
+	if (!message.guild) return;
+	const fetchedLogs = await message.guild.fetchAuditLogs({
+		limit: 1,
+		type: 'MESSAGE_DELETE',
+	});
+	const deletionLog = fetchedLogs.entries.first();
+
+	const { executor, target } = deletionLog;
+	if (target.id === message.author.id) {
+		var embed = {
+			color: "#ff4545",
+			title: `Message deleted by moderator`,
+			fields: [
+				{
+					"name": "Username",
+					"value": message.author.tag || 'Unknown'
+				},
+				{
+					"name": "ID",
+					"value": message.author.id || 'Unknown'
+				},
+				{
+					"name": "Message",
+					"value": message.content || 'Unknown'
+				},
+				{
+					"name": "Responsible Moderator",
+					"value": executor.tag || 'Unknown'
+				},
+				{
+					"name": "Time",
+					"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+				}
+			]
+		};;
+	} else {
+		var embed = {
+			color: "#ff4545",
+			title: `Message deleted by user`,
+			fields: [
+				{
+					"name": "Username",
+					"value": message.author.tag || 'Unknown'
+				},
+				{
+					"name": "ID",
+					"value": message.author.id || 'Unknown'
+				},
+				{
+					"name": "Message",
+					"value": message.content || 'Unknown'
+				},
+				{
+					"name": "Time",
+					"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+				}
+			]
+		};
+	}
+	
 	message.guild.channels.cache.get(config.channels.logs).send({ embeds: [embed] })
 })
 
 // message action
 client.on('messageCreate', async message => {
 	if (message.author.bot) return
+
+	// Phishing links
+	if (String(message.content).includes('http://') || String(message.content).includes('https://')) {
+		if (String(message.content).includes('http://')) {
+			var site = String(message.content).split('http://').pop().split('/').shift()
+		}
+		else {
+			var site = String(message.content).split('https://').pop().split('/').shift()
+		}
+		const res = await axios.get(`https://phish.sinking.yachts/v2/check/${site}`)
+		if (res.data === true) {
+			fs.writeFileSync('deleted.txt', 'true', 'utf-8')
+			message.delete()
+			const embed = {
+				color: "#ff4545",
+				title: 'Harmful site detected!',
+				description: "This message has been hidden and reported to the staff team.",
+				fields: [
+					{
+						"name": "Username",
+						"value": message.author.tag
+					},
+					{
+						"name": "Time",
+						"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+					}
+				],
+				footer: {
+					"icon_url": client.user.avatarURL(),
+					"text": "Powered by phish.sinking.yachts!"
+				}
+			};
+			message.channel.send({embeds: [embed]})
+			const logembed = {
+				color: "#ff4545",
+				title: `Harmful site detected by ${message.author.username}!`,
+				fields: [
+					{
+						"name": "Username",
+						"value": message.author.tag
+					},
+					{
+						"name": "ID",
+						"value": message.author.id
+					},
+					{
+						"name": "Message",
+						"value": message.content
+					},
+					{
+						"name": "Harmful Site",
+						"value": site
+					},
+					{
+						"name": "Time",
+						"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+					}
+				]
+			};
+			message.guild.channels.cache.get(config.channels.logs).send({embeds: [logembed]})
+		}
+	}
+
+	// Censors
 	const censored = JSON.parse(fs.readFileSync('./censored.json'))
 	for (i in censored) {
 		if (message.content.includes(censored[i])) {
@@ -99,6 +204,8 @@ client.on('messageCreate', async message => {
 			return message.delete();
 		}
 	}
+
+	// Triggers
 	const triggers = JSON.parse(fs.readFileSync('./triggers.json'))
 	triggers.forEach(trigger => {
 		if (message.content.includes(trigger.trigger)) {
