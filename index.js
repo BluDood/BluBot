@@ -41,6 +41,10 @@ client.on('error', error => {
 	console.error(error);
 });
 
+client.on('invalidRequestWarning', error => {
+	console.error(error);
+})
+
 client.on('messageDelete', async message => {
 	if (fs.readFileSync('deleted.txt', 'utf-8') === 'true') {
 		return fs.writeFileSync('deleted.txt', 'false', 'utf-8')
