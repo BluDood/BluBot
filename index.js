@@ -75,6 +75,10 @@ client.on('messageDelete', async message => {
 					"value": message.content || 'Unknown'
 				},
 				{
+					"name": "Channel",
+					"value": `<#${message.channel.id}>` || 'Unknown'
+				},
+				{
 					"name": "Responsible Moderator",
 					"value": executor.tag || 'Unknown'
 				},
@@ -100,6 +104,10 @@ client.on('messageDelete', async message => {
 				{
 					"name": "Message",
 					"value": message.content || 'Unknown'
+				},
+				{
+					"name": "Channel",
+					"value": `<#${message.channel.id}>` || 'Unknown'
 				},
 				{
 					"name": "Time",
@@ -135,7 +143,7 @@ client.on('messageCreate', async message => {
 				fields: [
 					{
 						"name": "Username",
-						"value": message.author.tag
+						"value": message.author.tag || 'Unknown'
 					},
 					{
 						"name": "Time",
@@ -154,19 +162,23 @@ client.on('messageCreate', async message => {
 				fields: [
 					{
 						"name": "Username",
-						"value": message.author.tag
+						"value": message.author.tag || 'Unknown'
 					},
 					{
 						"name": "ID",
-						"value": message.author.id
+						"value": message.author.id || 'Unknown'
 					},
 					{
 						"name": "Message",
-						"value": message.content
+						"value": message.content || 'Unknown'
+					},
+					{
+						"name": "Channel",
+						"value": `<#${message.channel.id}>` || 'Unknown'
 					},
 					{
 						"name": "Harmful Site",
-						"value": site
+						"value": site || 'Unknown'
 					},
 					{
 						"name": "Time",
@@ -182,21 +194,30 @@ client.on('messageCreate', async message => {
 	const censored = JSON.parse(fs.readFileSync('./censored.json'))
 	for (i in censored) {
 		if (message.content.includes(censored[i])) {
+			fs.writeFileSync('deleted.txt', 'true', 'utf-8')
 			const embed = {
 				color: "#ff8000",
 				title: `Deleted message with censored word from ${message.author.username}`,
 				fields: [
 					{
 						"name": "Username",
-						"value": message.author.tag
+						"value": message.author.tag || 'Unknown'
 					},
 					{
 						"name": "ID",
-						"value": message.author.id
+						"value": message.author.id || 'Unknown'
 					},
 					{
 						"name": "Message",
-						"value": message.content
+						"value": message.content || 'Unknown'
+					},
+					{
+						"name": "Censored Word",
+						"value": censored[i] || 'Unknown'
+					},
+					{
+						"name": "Channel",
+						"value": `<#${message.channel.id}>` || 'Unknown'
 					},
 					{
 						"name": "Time",
