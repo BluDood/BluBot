@@ -24,7 +24,7 @@ module.exports = {
 		const trigger = interaction.options.getString('trigger');
 		const response = interaction.options.getString('response');
 		const memberRoles = interaction.member.roles.cache.map(r => r.id)
-        if (!memberRoles.some(v => config.allowRoles.includes(v))) return interaction.reply('You do not have permission to execute this command!');
+		if (!memberRoles.some(v => config.allowRoles.includes(v))) return interaction.reply('You do not have permission to execute this command!');
 
 		if (interaction.options.getSubcommand() === "add") {
 			for (i in triggers) {

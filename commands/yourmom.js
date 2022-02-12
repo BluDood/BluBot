@@ -6,12 +6,12 @@ module.exports = {
 		.setName('yourmom')
 		.setDescription("yo momma so phat she couldn't run this command"),
 	async execute(interaction) {
-        async function getJoke() {
+		async function getJoke() {
 			const data = await fetch('https://api.yomomma.info')
 			return data.json()
 		}
 		var data = await getJoke()
-        const embed = {
+		const embed = {
 			color: "#0064FF",
 			title: data.joke,
 			footer: {

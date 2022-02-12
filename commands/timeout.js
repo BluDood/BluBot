@@ -12,10 +12,11 @@ module.exports = {
 		const target = interaction.options.getUser('target');
 		const duration = (interaction.options.getNumber('duration') * 1000 * 60 * 60 * 24);
 		const reason = interaction.options.getString('reason') || "N/A";
-		const member = interaction.guild.members.cache.get(target.id) || await interaction.guild.members.fetch(target.id).catch(err => {})
+		const member = interaction.guild.members.cache.get(target.id) || await interaction.guild.members.fetch(target.id).catch(err => { })
 		const timeoutUntil = new Date(new Date().getTime() + duration).toISOString()
 		const memberRoles = interaction.member.roles.cache.map(r => r.id)
 		if (!memberRoles.some(v => config.allowRoles.includes(v))) return interaction.reply('You do not have permission to execute this command!');
+		if (member.moderatable == false) return interaction.reply("Sorry, I can't timeout that user!")
 
 		const embed = {
 			color: "#ff8000",
@@ -49,9 +50,9 @@ module.exports = {
 		};
 
 		await member.timeout(interaction.options.getNumber('duration') * 1000 * 60 * 60 * 24, reason);
-		
-		interaction.guild.channels.cache.get(config.channels.logs).send({embeds: [embed]})
-        member.send(`You were timed out in ${config.server_name}!\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)`)
-		return interaction.reply({ content: `**Timed out ${target.username}**\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)`});
+
+		interaction.guild.channels.cache.get(config.channels.logs).send({ embeds: [embed] })
+		member.send(`You were timed out in ${config.server_name}!\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)`)
+		return interaction.reply({ content: `**Timed out ${target.username}**\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)` });
 	},
 };

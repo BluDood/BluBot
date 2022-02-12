@@ -15,7 +15,8 @@ module.exports = {
 		const days = interaction.options.getNumber('days') || 0;
 		const member = interaction.guild.members.cache.get(target.id) || await interaction.guild.members.fetch(target.id).catch(err => {})
 		const memberRoles = interaction.member.roles.cache.map(r => r.id)
-        if (!memberRoles.some(v => config.allowRoles.includes(v))) return interaction.reply('You do not have permission to execute this command!');
+		if (!memberRoles.some(v => config.allowRoles.includes(v))) return interaction.reply('You do not have permission to execute this command!');
+		if (member.bannable === false) return interaction.reply("Sorry, I can't ban that user!")
 		const embed = {
 			color: "#ff4545",
 			title: `Banned ${target.username}`,
