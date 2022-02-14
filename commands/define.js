@@ -11,6 +11,7 @@ module.exports = {
 		const query = interaction.options.getString('query');
 		interaction.deferReply()
 		const res = await axios.get(`${api}/define/${query}`);
+		if (await res.data.status == false) return interaction.editReply('Could not find that word!');
 		const embed = {
 			color: "#ff4545",
 			title: await res.data.word,
