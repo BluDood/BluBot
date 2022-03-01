@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { Client, Collection, Intents, MessageActionRow, MessageButton } = require('discord.js');
 const config = require('./config.json');
-const axios = require('axios')
+const axios = require('axios').default;
 const deployCommands = require('./deploy-commands')
 
 const client = new Client({
@@ -116,13 +116,135 @@ client.on('messageDelete', async message => {
 			]
 		};
 	}
-	
+
 	message.guild.channels.cache.get(config.channels.logs).send({ embeds: [embed] })
 })
 
 // message action
 client.on('messageCreate', async message => {
 	if (message.author.bot) return
+
+	// Shortlinks
+	if (String(message.content).includes('://bit.ly/')) {
+		var link = String(message.content).split('bit.ly/').pop().split(' ').shift().split('\n').shift()
+		const res = await axios.get(`https://bit.ly/${link}`, {
+			maxRedirects: 0,
+			validateStatus: false
+		})
+		const embed = {
+			color: "#e25c21",
+			title: 'Shortlink detected!',
+			description: "Here is the original link. Stay safe on the Internet!",
+			fields: [
+				{
+					"name": "Long URL",
+					"value": res.headers.location || 'Unknown'
+				},
+				{
+					"name": "Username",
+					"value": message.author.tag || 'Unknown'
+				},
+				{
+					"name": "Time",
+					"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+				}
+			]
+		};
+		message.reply({ embeds: [embed] })
+	}
+
+
+	// Harmful websites
+	if (String(message.content).includes('http://') || String(message.content).includes('https://')) {
+		if (!config.gAPIToken) return
+		if (String(message.content).includes('http://')) {
+			var site = String(message.content).split('http://').pop().split(' ').shift()
+		}
+		else {
+			var site = String(message.content).split('https://').pop().split(' ').shift()
+		}
+		const res = await axios.post(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${config.gAPIToken}`, {
+			client: {
+				clientId: "BluBot",
+				clientVersion: "0.0.1"
+			},
+			threatInfo: {
+				threatTypes: ["THREAT_TYPE_UNSPECIFIED", "MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
+				platformTypes: ["ANY_PLATFORM"],
+				threatEntryTypes: ["URL"],
+				threatEntries: [
+					{ "url": site }
+				]
+			}
+		})
+		if (res.data.matches) {
+			fs.writeFileSync('deleted.txt', 'true', 'utf-8')
+			message.delete()
+			const embed = {
+				color: "#ff4545",
+				title: 'Unsafe site detected!',
+				description: "This message has been hidden and reported to the staff team.",
+				fields: [
+					{
+						"name": "Username",
+						"value": message.author.tag || 'Unknown'
+					},
+					{
+						"name": "Time",
+						"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+					}
+				],
+				footer: {
+					"text": "Powered by Google Safe Browsing!"
+				}
+			};
+			message.channel.send({ embeds: [embed] })
+			function titleCase(string) {
+				return string.split(' ')
+					.map(w => w[0].toUpperCase() + w.substring(1).toLowerCase())
+					.join(' ');
+			}
+			const logembed = {
+				color: "#ff4545",
+				title: `Unsafe site detected by ${message.author.username}!`,
+				fields: [
+					{
+						"name": "Username",
+						"value": message.author.tag || 'Unknown'
+					},
+					{
+						"name": "ID",
+						"value": message.author.id || 'Unknown'
+					},
+					{
+						"name": "Message",
+						"value": message.content || 'Unknown'
+					},
+					{
+						"name": "Channel",
+						"value": `<#${message.channel.id}>` || 'Unknown'
+					},
+					{
+						"name": "URL",
+						"value": res.data.matches[0].threat.url || 'Unknown'
+					},
+					{
+						"name": "Threat Type",
+						"value": titleCase(String(res.data.matches[0].threatType).replace('_', ' ')) || 'Unknown'
+					},
+					{
+						"name": "Threat Platform",
+						"value": titleCase(String(res.data.matches[0].platformType).replace('_', ' ')) || 'Unknown'
+					},
+					{
+						"name": "Time",
+						"value": `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
+					}
+				]
+			};
+			message.guild.channels.cache.get(config.channels.logs).send({ embeds: [logembed] })
+		}
+	}
 
 	// Phishing links
 	if (String(message.content).includes('http://') || String(message.content).includes('https://')) {
@@ -138,7 +260,7 @@ client.on('messageCreate', async message => {
 			message.delete()
 			const embed = {
 				color: "#ff4545",
-				title: 'Harmful site detected!',
+				title: 'Phishing site detected!',
 				description: "This message has been hidden and reported to the staff team.",
 				fields: [
 					{
@@ -155,10 +277,10 @@ client.on('messageCreate', async message => {
 					"text": "Powered by phish.sinking.yachts!"
 				}
 			};
-			message.channel.send({embeds: [embed]})
+			message.channel.send({ embeds: [embed] })
 			const logembed = {
 				color: "#ff4545",
-				title: `Harmful site detected by ${message.author.username}!`,
+				title: `Phishing site detected by ${message.author.username}!`,
 				fields: [
 					{
 						"name": "Username",
@@ -186,7 +308,7 @@ client.on('messageCreate', async message => {
 					}
 				]
 			};
-			message.guild.channels.cache.get(config.channels.logs).send({embeds: [logembed]})
+			message.guild.channels.cache.get(config.channels.logs).send({ embeds: [logembed] })
 		}
 	}
 

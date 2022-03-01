@@ -3,6 +3,7 @@
     "clientId": "ID of your Discord Bot's client",
     "guildId": "ID of your Discord Server",
     "token": "Your Discord Bot's Token",
+    "gAPIToken": "Your Google API Token (for the safe browsing API)",
     "channels": {
         "logs": "Log channel ID"
     },
