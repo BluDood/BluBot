@@ -10,6 +10,8 @@ if (!fs.existsSync('./config.json')) {
   process.exit()
 }
 
+if (!fs.existsSync('./databases')) fs.mkdirSync('./databases')
+
 const client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
