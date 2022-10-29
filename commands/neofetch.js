@@ -1,7 +1,15 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-const chalk = require('chalk')
+const { Instance } = require('chalk')
 const os = require('os')
-const { getDependency, getVersion } = require('../utils/packagejson')
+const {
+  getDependency,
+  getVersion,
+  getPackageAmount
+} = require('../utils/packagejson')
+
+const chalk = new Instance({
+  level: 1
+})
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -25,6 +33,13 @@ module.exports = {
     const cpus = os.cpus()
     const cpu_name = cpus[0].model
 
+    const memes = [
+      `${chalk.red('People who asked')}: 0`,
+      `${chalk.red('Amount of bitches achieved')}: 0`,
+      `${chalk.red('Yo mama')}: phat`,
+      `${chalk.red('Favorite number')}: 69`
+    ]
+
     // prettier-ignore
     const info = [
       `${chalk.red("BluBot")} @ ${chalk.red(os.hostname())}`,
@@ -36,9 +51,10 @@ module.exports = {
       `${chalk.red("Uptime")}: ${hours ? `${hours} hours, ` : ''}${minutes ? `${minutes} minutes and ` : ''}${seconds} seconds`,
       `${chalk.red("Ping")}: ${interaction.client.ws.ping}ms`,
       '',
-      `${chalk.red("OS")}: ${os.version()} ${os.arch()}`,
+      `${chalk.red("Packages")}: ${getPackageAmount()} (npm)`,
+      memes[Math.floor(Math.random() * memes.length)],
       `${chalk.red("CPU")}: ${cpu_name} (${cpus.length})`,
-      `${chalk.red("Memory")}: ${Math.round(os.freemem() / 1000000)}MB / ${Math.round(os.totalmem() / 1000000)}MB`,
+      `${chalk.red("Memory")}: ${Math.round((os.totalmem() - os.freemem()) / 1000000)}MB / ${Math.round(os.totalmem() / 1000000)}MB`,
       '',
       `${chalk.black("██")}${chalk.red("██")}${chalk.green("██")}${chalk.yellow("██")}${chalk.blue("██")}${chalk.magenta("██")}${chalk.cyan("██")}${chalk.white("██")}`
     ]

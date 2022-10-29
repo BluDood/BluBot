@@ -21,5 +21,8 @@ module.exports = {
   },
   getVersion: () => {
     return readPackage().version
+  },
+  getPackageAmount: () => {
+    return Object.keys(readPackage().dependencies).length
   }
 }
