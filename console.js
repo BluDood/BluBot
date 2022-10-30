@@ -35,13 +35,7 @@ const commands = {
     uptime %= 3600
     const minutes = Math.floor(uptime / 60)
     const seconds = Math.floor(uptime % 60)
-    console.log(
-      chalk.yellow(
-        `\nUptime: ${hours ? `${hours} hours, ` : ''}${
-          minutes ? `${minutes} minutes and ` : ''
-        }${seconds} seconds.`
-      )
-    )
+    console.log(chalk.yellow(`\nUptime: ${hours ? `${hours} hours, ` : ''}${minutes ? `${minutes} minutes and ` : ''}${seconds} seconds.`))
   },
   q: () => {
     console.log('Goodbye!')

@@ -7,9 +7,7 @@ module.exports = {
     const detected = []
     for (let match of matches) {
       const domain = match.split('://')[1]
-      const phish = await axios
-        .get(`https://phish.sinking.yachts/v2/check/${domain}`)
-        .catch(() => null)
+      const phish = await axios.get(`https://phish.sinking.yachts/v2/check/${domain}`).catch(() => null)
       if (!phish?.data) continue
       detected.push(match)
     }

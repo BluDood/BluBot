@@ -23,9 +23,7 @@ module.exports = (guild, type, info) => {
         },
         {
           name: 'Time',
-          value: `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(
-            Date.now() / 1000
-          )}:R>`
+          value: `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
         }
       ]
     },
@@ -42,9 +40,7 @@ module.exports = (guild, type, info) => {
         },
         {
           name: 'Time',
-          value: `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(
-            Date.now() / 1000
-          )}:R>`
+          value: `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
         }
       ]
     },
@@ -65,9 +61,7 @@ module.exports = (guild, type, info) => {
         },
         {
           name: 'Time',
-          value: `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(
-            Date.now() / 1000
-          )}:R>`
+          value: `<t:${Math.floor(Date.now() / 1000)}:f>\n<t:${Math.floor(Date.now() / 1000)}:R>`
         }
       ]
     }
@@ -109,9 +103,7 @@ module.exports = (guild, type, info) => {
     },
     messageDelete: () => {
       const embed = JSON.parse(JSON.stringify(templates.message))
-      embed.title = `Message deleted by ${
-        info.moderator ? 'moderator' : 'user'
-      }`
+      embed.title = `Message deleted by ${info.moderator ? 'moderator' : 'user'}`
       embed.color = resolveColor(colors.bad || '#f45450')
       if (info.moderator)
         embed.fields.splice(2, 0, {
@@ -132,9 +124,7 @@ module.exports = (guild, type, info) => {
     },
     purge: () => {
       const embed = JSON.parse(JSON.stringify(templates.channel))
-      embed.title = `Purged ${info.amount} message${
-        info.amount === 1 ? '' : 's'
-      }${info.target ? ` by ${info.target.tag}` : ''}`
+      embed.title = `Purged ${info.amount} message${info.amount === 1 ? '' : 's'}${info.target ? ` by ${info.target.tag}` : ''}`
       embed.color = resolveColor(colors.medium || '#fdbc40')
       if (info.target)
         embed.fields.splice(0, 0, {

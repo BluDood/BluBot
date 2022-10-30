@@ -5,8 +5,7 @@ const sleep = require('../utils/sleep')
 module.exports = {
   event: 'messageDelete',
   async listener(message) {
-    if (!fs.existsSync('./databases/deleted.txt'))
-      fs.writeFileSync('./databases/deleted.txt', 'false', 'utf-8')
+    if (!fs.existsSync('./databases/deleted.txt')) fs.writeFileSync('./databases/deleted.txt', 'false', 'utf-8')
     if (fs.readFileSync('./databases/deleted.txt', 'utf-8') === 'true') {
       return fs.writeFileSync('./databases/deleted.txt', 'false', 'utf-8')
     }
@@ -18,10 +17,7 @@ module.exports = {
     })
     const deletionLog = fetchedLogs.entries.first()
     const { executor, target } = deletionLog || {}
-    if (
-      target?.id === message.author.id &&
-      deletionLog.createdAt > message.createdAt
-    )
+    if (target?.id === message.author.id && deletionLog.createdAt > message.createdAt)
       log(message.guild, 'messageDelete', {
         moderator: {
           id: executor.id

@@ -10,12 +10,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('kick')
     .setDescription('Kick a member.')
-    .addUserOption(option =>
-      option.setName('target').setDescription('User to kick').setRequired(true)
-    )
-    .addStringOption(option =>
-      option.setName('reason').setDescription('Reason for the kick')
-    ),
+    .addUserOption(option => option.setName('target').setDescription('User to kick').setRequired(true))
+    .addStringOption(option => option.setName('reason').setDescription('Reason for the kick')),
   async execute(interaction) {
     if (!checkUserPerms(interaction))
       return interaction.reply({
@@ -24,9 +20,7 @@ module.exports = {
       })
     const target = interaction.options.getUser('target')
     const reason = interaction.options.getString('reason') || 'N/A'
-    const member = await interaction.guild.members
-      .fetch({ user: target, force: true })
-      .catch(() => null)
+    const member = await interaction.guild.members.fetch({ user: target, force: true }).catch(() => null)
     if (!member)
       return interaction.reply({
         content: "I can't find that user!",

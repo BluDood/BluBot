@@ -13,27 +13,15 @@ module.exports = {
       subcommand
         .setName('add')
         .setDescription('Add a censored word')
-        .addStringOption(option =>
-          option
-            .setName('word')
-            .setDescription('The word to censor')
-            .setRequired(true)
-        )
+        .addStringOption(option => option.setName('word').setDescription('The word to censor').setRequired(true))
     )
     .addSubcommand(subcommand =>
       subcommand
         .setName('remove')
         .setDescription('Remove a censored word')
-        .addStringOption(option =>
-          option
-            .setName('word')
-            .setDescription('The word to remove')
-            .setRequired(true)
-        )
+        .addStringOption(option => option.setName('word').setDescription('The word to remove').setRequired(true))
     )
-    .addSubcommand(subcommand =>
-      subcommand.setName('list').setDescription('List all censored words')
-    ),
+    .addSubcommand(subcommand => subcommand.setName('list').setDescription('List all censored words')),
   async execute(interaction) {
     const word = interaction.options.getString('word')?.toLowerCase()
     if (!checkUserPerms(interaction))

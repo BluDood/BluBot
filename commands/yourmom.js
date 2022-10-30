@@ -5,9 +5,7 @@ const {
 } = require('../config.json')
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('yourmom')
-    .setDescription("yo momma so phat she couldn't run this command"),
+  data: new SlashCommandBuilder().setName('yourmom').setDescription("yo momma so phat she couldn't run this command"),
   async execute(interaction) {
     const joke = await axios.get('https://api.yomomma.info').catch(() => null)
     if (joke?.data.joke)

@@ -10,27 +10,13 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('timeout')
     .setDescription('Time out a member.')
-    .addUserOption(option =>
-      option
-        .setName('target')
-        .setDescription('User to timeout')
-        .setRequired(true)
-    )
-    .addStringOption(option =>
-      option
-        .setName('duration')
-        .setDescription('Duration for the timeout (s, m, h, d, w, M, y)')
-        .setRequired(true)
-    )
-    .addStringOption(option =>
-      option.setName('reason').setDescription('Reason for the timeout')
-    ),
+    .addUserOption(option => option.setName('target').setDescription('User to timeout').setRequired(true))
+    .addStringOption(option => option.setName('duration').setDescription('Duration for the timeout (s, m, h, d, w, M, y)').setRequired(true))
+    .addStringOption(option => option.setName('reason').setDescription('Reason for the timeout')),
   async execute(interaction) {
     const target = interaction.options.getUser('target')
     const reason = interaction.options.getString('reason') || 'N/A'
-    const member = await interaction.guild.members
-      .fetch({ user: target, force: true })
-      .catch(() => null)
+    const member = await interaction.guild.members.fetch({ user: target, force: true }).catch(() => null)
     if (!member)
       return interaction.reply({
         content: "I can't find that user!",
@@ -84,9 +70,7 @@ module.exports = {
       moderator: {
         id: interaction.user.id
       },
-      duration: `Duration: ${amount} ${unitNames[unit]}${
-        amount == 1 ? '' : 's'
-      }`
+      duration: `Duration: ${amount} ${unitNames[unit]}${amount == 1 ? '' : 's'}`
     })
     if (!dm)
       await interaction.followUp({

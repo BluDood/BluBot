@@ -4,9 +4,7 @@ const log = require('./log')
 
 async function ban(target, reason, deleteMessages) {
   if (!target.bannable) return 'that user is not bannable!'
-  const ban = await target
-    .ban(target, { days: deleteMessages, reason: reason })
-    .catch(() => false)
+  const ban = await target.ban(target, { days: deleteMessages, reason: reason }).catch(() => false)
   if (ban == false) return 'I could not ban that user!'
   return true
 }
@@ -42,9 +40,7 @@ async function untimeout(target, reason) {
 
 async function purge(channel, amount, reason, target) {
   if (!channel.manageable) return 'that channel is not manageable!'
-  let messages = await channel.messages
-    .fetch({ limit: amount }, { cache: false, force: true })
-    .catch(() => false)
+  let messages = await channel.messages.fetch({ limit: amount }, { cache: false, force: true }).catch(() => false)
   if (target) messages = messages.filter(m => m.author.id == target.id)
   if (messages == false) return 'an unknown error occurred!'
   if (messages.size == 0) return 'there are no messages to purge!'

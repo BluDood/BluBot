@@ -11,9 +11,7 @@ module.exports = {
       await message.delete()
       const messaged = JSON.parse(fs.readFileSync('./databases/messaged.json'))
       if (messaged[message.author.id]?.time > Date.now() / 1000) return
-      message.author.send(
-        "Sorry, you can't send that link here!\nThe link was referring to a known phishing scam, so i deleted the message for you."
-      )
+      message.author.send("Sorry, you can't send that link here!\nThe link was referring to a known phishing scam, so i deleted the message for you.")
       if (!messaged[message.author.id]) messaged[message.author.id] = {}
       messaged[message.author.id].time = Date.now() / 1000 + 300
       fs.writeFileSync('./databases/messaged.json', JSON.stringify(messaged))

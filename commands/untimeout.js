@@ -10,21 +10,12 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('untimeout')
     .setDescription('Remove the timeout a member.')
-    .addUserOption(option =>
-      option
-        .setName('target')
-        .setDescription('User to remove timeout for')
-        .setRequired(true)
-    )
-    .addStringOption(option =>
-      option.setName('reason').setDescription('Reason for the timeout removal')
-    ),
+    .addUserOption(option => option.setName('target').setDescription('User to remove timeout for').setRequired(true))
+    .addStringOption(option => option.setName('reason').setDescription('Reason for the timeout removal')),
   async execute(interaction) {
     const target = interaction.options.getUser('target')
     const reason = interaction.options.getString('reason') || 'N/A'
-    const member = await interaction.guild.members
-      .fetch({ user: target, force: true })
-      .catch(() => null)
+    const member = await interaction.guild.members.fetch({ user: target, force: true }).catch(() => null)
     if (!member)
       return interaction.reply({
         content: "I can't find that user!",

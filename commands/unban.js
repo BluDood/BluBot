@@ -9,12 +9,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
     .setDescription('Revokes the ban for a member.')
-    .addUserOption(option =>
-      option.setName('target').setDescription('User to unban').setRequired(true)
-    )
-    .addStringOption(option =>
-      option.setName('reason').setDescription('Reason for the unban')
-    ),
+    .addUserOption(option => option.setName('target').setDescription('User to unban').setRequired(true))
+    .addStringOption(option => option.setName('reason').setDescription('Reason for the unban')),
   async execute(interaction) {
     if (!checkUserPerms(interaction))
       return interaction.reply({

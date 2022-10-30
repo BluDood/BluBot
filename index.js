@@ -4,9 +4,7 @@ const deploy = require('./utils/deploy')
 const bconsole = require('./console')
 
 if (!fs.existsSync('./config.json')) {
-  console.log(
-    "Looks like you haven't set up the bot yet! Please run 'npm run setup' and try again."
-  )
+  console.log("Looks like you haven't set up the bot yet! Please run 'npm run setup' and try again.")
   process.exit()
 }
 
@@ -17,9 +15,7 @@ const client = new Client({
 })
 
 client.commands = new Collection()
-const commandFiles = fs
-  .readdirSync('./commands')
-  .filter(file => file.endsWith('.js'))
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`)
   client.commands.set(command.data.name, command)
@@ -31,9 +27,7 @@ client.once('ready', async c => {
   deploy(c.user.id)
 })
 
-for (const eventFile of fs
-  .readdirSync('./events')
-  .filter(file => file.endsWith('.js'))) {
+for (const eventFile of fs.readdirSync('./events').filter(file => file.endsWith('.js'))) {
   const event = require(`./events/${eventFile}`)
   client.on(event.event, event.listener)
 }

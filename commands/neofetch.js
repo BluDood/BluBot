@@ -1,11 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
 const { Instance } = require('chalk')
 const os = require('os')
-const {
-  getDependency,
-  getVersion,
-  getPackageAmount
-} = require('../utils/packagejson')
+const { getDependency, getVersion, getPackageAmount } = require('../utils/packagejson')
 
 const chalk = new Instance({
   level: 1
@@ -15,13 +11,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('neofetch')
     .setDescription('Information about this bot')
-    .addBooleanOption(option =>
-      option
-        .setName('minimal')
-        .setDescription(
-          'Show minimal message without ASCII art. Better for mobile screens.'
-        )
-    ),
+    .addBooleanOption(option => option.setName('minimal').setDescription('Show minimal message without ASCII art. Better for mobile screens.')),
   async execute(interaction) {
     const minimal = interaction.options.getBoolean('minimal')
     let uptime = process.uptime()
@@ -33,12 +23,7 @@ module.exports = {
     const cpus = os.cpus()
     const cpu_name = cpus[0].model
 
-    const memes = [
-      `${chalk.red('People who asked')}: 0`,
-      `${chalk.red('Amount of bitches achieved')}: 0`,
-      `${chalk.red('Yo mama')}: phat`,
-      `${chalk.red('Favorite number')}: 69`
-    ]
+    const memes = [`${chalk.red('People who asked')}: 0`, `${chalk.red('Amount of bitches achieved')}: 0`, `${chalk.red('Yo mama')}: phat`, `${chalk.red('Favorite number')}: 69`]
 
     // prettier-ignore
     const info = [
@@ -85,12 +70,6 @@ module.exports = {
     const offset = Math.floor((ascii.length - info.length) / 2)
     return minimal
       ? interaction.reply(`\`\`\`ansi\n \n  ${info.join('\n  ')}\n \`\`\``)
-      : interaction.reply(
-          `\`\`\`ansi\n${chalk.blue(
-            ascii
-              .map((a, i) => '  ' + a + '  ' + (info[i - offset] || ''))
-              .join('\n')
-          )}\n\n\n\`\`\``
-        )
+      : interaction.reply(`\`\`\`ansi\n${chalk.blue(ascii.map((a, i) => '  ' + a + '  ' + (info[i - offset] || '')).join('\n'))}\n\n\n\`\`\``)
   }
 }

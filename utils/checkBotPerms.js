@@ -18,9 +18,7 @@ module.exports = interaction => {
     'MODERATE_MEMBERS'
   ]
   const currentPerms = interaction.guild.me.permissions.serialize()
-  const missingPerms = requiredPerms.filter(
-    perm => currentPerms[perm] === false
-  )
+  const missingPerms = requiredPerms.filter(perm => currentPerms[perm] === false)
   if (missingPerms.length === 0) return true
   return missingPerms
 }
