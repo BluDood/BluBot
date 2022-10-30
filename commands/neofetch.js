@@ -27,7 +27,7 @@ module.exports = {
 
     // prettier-ignore
     const info = [
-      `${chalk.red("BluBot")} @ ${chalk.red(os.hostname())}`,
+      `${chalk.red(interaction.client.user.username)} @ ${chalk.red(os.hostname())}`,
       '',
       `${chalk.red("Version")}: ${getVersion()}`,
       `${chalk.red("node")}: ${process.version}`,
