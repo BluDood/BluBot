@@ -1,3 +1,5 @@
+const { resolveColor } = require('discord.js')
+
 module.exports = (guild, type, info) => {
   const {
     customization: { accent, colors },
@@ -74,25 +76,25 @@ module.exports = (guild, type, info) => {
     ban: () => {
       const embed = JSON.parse(JSON.stringify(templates.moderate))
       embed.title = `Banned ${info.target.tag}`
-      embed.color = colors.bad || '#f45450'
+      embed.color = resolveColor(colors.bad || '#f45450')
       return embed
     },
     unban: () => {
       const embed = JSON.parse(JSON.stringify(templates.moderate))
       embed.title = `Unbanned ${info.target.tag}`
-      embed.color = colors.good || '#36c84b'
+      embed.color = resolveColor(colors.good || '#36c84b')
       return embed
     },
     kick: () => {
       const embed = JSON.parse(JSON.stringify(templates.moderate))
       embed.title = `Kicked ${info.target.tag}`
-      embed.color = colors.bad || '#f45450'
+      embed.color = resolveColor(colors.bad || '#f45450')
       return embed
     },
     timeout: () => {
       const embed = JSON.parse(JSON.stringify(templates.moderate))
       embed.title = `Timed out ${info.target.tag}`
-      embed.color = colors.medium || '#fdbc40'
+      embed.color = resolveColor(colors.medium || '#fdbc40')
       embed.fields.splice(2, 0, {
         name: 'Duration',
         value: `${info.duration}`
@@ -102,7 +104,7 @@ module.exports = (guild, type, info) => {
     untimeout: () => {
       const embed = JSON.parse(JSON.stringify(templates.moderate))
       embed.title = `Removed timeout for ${info.target.tag}`
-      embed.color = colors.good || '#36c84b'
+      embed.color = resolveColor(colors.good || '#36c84b')
       return embed
     },
     messageDelete: () => {
@@ -110,7 +112,7 @@ module.exports = (guild, type, info) => {
       embed.title = `Message deleted by ${
         info.moderator ? 'moderator' : 'user'
       }`
-      embed.color = colors.bad || '#f45450'
+      embed.color = resolveColor(colors.bad || '#f45450')
       if (info.moderator)
         embed.fields.splice(2, 0, {
           name: 'Responsible Moderator',
@@ -121,7 +123,7 @@ module.exports = (guild, type, info) => {
     messageEdit: () => {
       const embed = JSON.parse(JSON.stringify(templates.message))
       embed.title = 'Message edited'
-      embed.color = colors.medium || '#fdbc40'
+      embed.color = resolveColor(colors.medium || '#fdbc40')
       embed.fields.splice(1, 0, {
         name: 'Old Message',
         value: info.oldMessage
@@ -133,7 +135,7 @@ module.exports = (guild, type, info) => {
       embed.title = `Purged ${info.amount} message${
         info.amount === 1 ? '' : 's'
       }${info.target ? ` by ${info.target.tag}` : ''}`
-      embed.color = colors.medium || '#fdbc40'
+      embed.color = resolveColor(colors.medium || '#fdbc40')
       if (info.target)
         embed.fields.splice(0, 0, {
           name: 'User',
@@ -144,19 +146,19 @@ module.exports = (guild, type, info) => {
     lock: () => {
       const embed = JSON.parse(JSON.stringify(templates.channel))
       embed.title = `Locked #${info.channel.name}`
-      embed.color = colors.medium || '#fdbc40'
+      embed.color = resolveColor(colors.medium || '#fdbc40')
       return embed
     },
     unlock: () => {
       const embed = JSON.parse(JSON.stringify(templates.channel))
       embed.title = `Unlocked #${info.channel.name}`
-      embed.color = colors.good || '#36c84b'
+      embed.color = resolveColor(colors.good || '#36c84b')
       return embed
     },
     phish: () => {
       const embed = JSON.parse(JSON.stringify(templates.message))
       embed.title = `Deleted phishing site by ${info.target.tag}`
-      embed.color = colors.bad || '#f45450'
+      embed.color = resolveColor(colors.bad || '#f45450')
       embed.fields.splice(3, 0, {
         name: 'Harmful Site',
         value: info.site

@@ -1,4 +1,4 @@
-const { Client, Collection, Intents } = require('discord.js')
+const { Client, Collection, GatewayIntentBits } = require('discord.js')
 const fs = require('fs')
 const deploy = require('./utils/deploy')
 const bconsole = require('./console')
@@ -13,11 +13,7 @@ if (!fs.existsSync('./config.json')) {
 if (!fs.existsSync('./databases')) fs.mkdirSync('./databases')
 
 const client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_VOICE_STATES
-  ]
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
 })
 
 client.commands = new Collection()
