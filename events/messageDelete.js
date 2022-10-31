@@ -1,4 +1,4 @@
-const { AuditLogEvent } = require('discord-api-types/v10')
+const { AuditLogEvent } = require('discord.js')
 const fs = require('fs')
 const log = require('../utils/log')
 const sleep = require('../utils/sleep')
