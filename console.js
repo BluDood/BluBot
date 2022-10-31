@@ -1,8 +1,10 @@
 const chalk = require('chalk')
 const sleep = require('./utils/sleep')
 
+let minimal = false
+
 async function motd(tag) {
-  console.clear()
+  !minimal && console.clear()
   const ascii = `______ _      ______       _   
 | ___ \\ |     | ___ \\     | |  
 | |_/ / |_   _| |_/ / ___ | |_ 
@@ -16,7 +18,7 @@ async function motd(tag) {
     await sleep(50)
   }
   tag && console.log(`Welcome to BluBot! Your bot (${tag}) is now running.`)
-  console.log('Press h for help.')
+  console.log(minimal ? 'Press h and hit Enter for help.' : 'Press h for help.')
 }
 
 const commands = {
@@ -44,19 +46,28 @@ const commands = {
 }
 
 module.exports = {
-  init: () => {
-    console.clear()
+  init: arg => {
+    if (arg === '--minimal') minimal = true
+    !minimal && console.clear()
     console.log(chalk.yellow('Starting BluBot...'))
-    process.stdin.setRawMode?.(true)
-    process.stdin.resume()
-    process.stdin.setEncoding('utf8')
+    if (!minimal) {
+      process.stdin.setRawMode?.(true)
+      process.stdin.resume()
+      process.stdin.setEncoding('utf8')
 
-    process.stdin.on('data', key => {
-      if (key === '\u0003') process.exit()
-      const found = commands[key]
-      if (!found) return
-      found()
-    })
+      process.stdin.on('data', key => {
+        if (key === '\u0003') process.exit()
+        const found = commands[key]
+        if (!found) return
+        found()
+      })
+    } else {
+      process.stdin.on('data', line => {
+        const found = commands[line.toString().trim()]
+        if (!found) return
+        found()
+      })
+    }
   },
   motd
 }

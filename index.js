@@ -21,7 +21,7 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command)
 }
 
-bconsole.init()
+bconsole.init(process.argv[2])
 client.once(Events.ClientReady, async c => {
   bconsole.motd(c.user.tag)
   deploy(c.user.id)
