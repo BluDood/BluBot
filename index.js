@@ -11,7 +11,7 @@ if (!fs.existsSync('./config.json')) {
 if (!fs.existsSync('./databases')) fs.mkdirSync('./databases')
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 })
 
 client.commands = new Collection()
