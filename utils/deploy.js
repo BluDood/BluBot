@@ -3,8 +3,7 @@ const sleep = require('./sleep')
 module.exports = id => {
   const fs = require('fs')
   const crypto = require('crypto')
-  const { REST } = require('@discordjs/rest')
-  const { Routes } = require('discord-api-types/v9')
+  const { Routes, REST } = require('discord.js')
   const { guildId, token } = require('../config.json')
 
   const commands = []

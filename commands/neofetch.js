@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders')
+const { SlashCommandBuilder } = require('discord.js')
 const { Instance } = require('chalk')
 const os = require('os')
 const { getDependency, getVersion, getPackageAmount } = require('../utils/packagejson')
