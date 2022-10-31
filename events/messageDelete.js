@@ -1,3 +1,4 @@
+const { AuditLogEvent } = require('discord-api-types/v10')
 const fs = require('fs')
 const log = require('../utils/log')
 const sleep = require('../utils/sleep')
@@ -13,7 +14,7 @@ module.exports = {
     await sleep(1000)
     const fetchedLogs = await message.guild.fetchAuditLogs({
       limit: 1,
-      type: 'MESSAGE_DELETE'
+      type: AuditLogEvent.MessageDelete
     })
     const deletionLog = fetchedLogs.entries.first()
     const { executor, target } = deletionLog || {}
