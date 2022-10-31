@@ -1,9 +1,10 @@
+const { Events } = require('discord.js')
 const fs = require('fs')
 const phishing = require('../filters/phishing').check
 const log = require('../utils/log')
 
 module.exports = {
-  event: 'messageCreate',
+  event: Events.MessageCreate,
   async listener(message) {
     if (message.author.bot) return
     const phishingLinks = await phishing(message.content)

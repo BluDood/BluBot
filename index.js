@@ -1,4 +1,4 @@
-const { Client, Collection, GatewayIntentBits } = require('discord.js')
+const { Client, Collection, GatewayIntentBits, Events } = require('discord.js')
 const fs = require('fs')
 const deploy = require('./utils/deploy')
 const bconsole = require('./console')
@@ -22,7 +22,7 @@ for (const file of commandFiles) {
 }
 
 bconsole.init()
-client.once('ready', async c => {
+client.once(Events.ClientReady, async c => {
   bconsole.motd(c.user.tag)
   deploy(c.user.id)
 })
@@ -32,15 +32,11 @@ for (const eventFile of fs.readdirSync('./events').filter(file => file.endsWith(
   client.on(event.event, event.listener)
 }
 
-client.on('unhandledRejection', error => {
+client.on(Events.Error, error => {
   console.log(error)
 })
 
-client.on('error', error => {
-  console.log(error)
-})
-
-client.on('interactionCreate', async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
   if (interaction.isButton()) return
   const command = client.commands.get(interaction.commandName)
   if (command) {

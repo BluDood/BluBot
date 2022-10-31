@@ -1,10 +1,10 @@
-const { AuditLogEvent } = require('discord.js')
+const { AuditLogEvent, Events } = require('discord.js')
 const fs = require('fs')
 const log = require('../utils/log')
 const sleep = require('../utils/sleep')
 
 module.exports = {
-  event: 'messageDelete',
+  event: Events.MessageDelete,
   async listener(message) {
     if (!fs.existsSync('./databases/deleted.txt')) fs.writeFileSync('./databases/deleted.txt', 'false', 'utf-8')
     if (fs.readFileSync('./databases/deleted.txt', 'utf-8') === 'true') {
