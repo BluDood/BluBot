@@ -8,7 +8,7 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('reactionroles')
-    .setDescription('Setup reaction roles')
+    .setDescription('Manage reaction roles')
     .addSubcommand(subcommand =>
       subcommand
         .setName('add')
