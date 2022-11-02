@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js')
 const axios = require('axios').default
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 
 module.exports = {
   data: new SlashCommandBuilder().setName('yourmom').setDescription("yo momma so phat she couldn't run this command"),
@@ -13,7 +11,7 @@ module.exports = {
         embeds: [
           {
             title: joke.data.joke,
-            color: accent,
+            color: config.getColor('accent'),
             footer: {
               text: `Powered by api.yomomma.info`
             }
@@ -25,7 +23,7 @@ module.exports = {
         embeds: [
           {
             title: 'Yo momma so phat she rolled over the cables and broke them',
-            color: accent,
+            color: config.getColor('accent'),
             footer: {
               text: 'I was not able to fetch a joke from api.yomomma.info.'
             }

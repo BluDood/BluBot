@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 const checkUserPerms = require('../utils/checkUserPerms')
 
 module.exports = {
@@ -12,7 +10,7 @@ module.exports = {
         embeds: [
           {
             title: `You are allowed to moderate using this bot!`,
-            color: accent
+            color: config.getColor('accent')
           }
         ]
       })
@@ -20,7 +18,7 @@ module.exports = {
       embeds: [
         {
           title: `You are not allowed to moderate using this bot.`,
-          color: accent
+          color: config.getColor('accent')
         }
       ]
     })

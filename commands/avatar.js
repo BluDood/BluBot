@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,7 +14,7 @@ module.exports = {
         {
           title: `${user.username}'s avatar`,
           description: `Download as [png](${avatar('png')}), [jpeg](${avatar('jpeg')}) or [webp](${avatar('webp')}).`,
-          color: accent,
+          color: config.getColor('accent'),
           image: {
             url: avatar('png')
           }

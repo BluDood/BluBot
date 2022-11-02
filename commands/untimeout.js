@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 const checkUserPerms = require('../utils/checkUserPerms')
 const directMessage = require('../utils/directMessage')
 const log = require('../utils/log')
@@ -30,7 +28,7 @@ module.exports = {
       embeds: [
         {
           title: `Removed timeout for ${target.tag}.`,
-          color: accent
+          color: config.getColor('accent')
         }
       ],
       ephemeral: true

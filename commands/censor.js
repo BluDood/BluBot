@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 const fs = require('fs')
 const checkUserPerms = require('../utils/checkUserPerms')
 
@@ -67,7 +65,7 @@ module.exports = {
         embeds: [
           {
             title: 'Censored words',
-            color: accent,
+            color: config.getColor('accent'),
             fields: censored.map(c => ({
               name: c.word,
               value: `Added by <@${c.user}>`

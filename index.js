@@ -3,11 +3,8 @@ const fs = require('fs')
 const deploy = require('./utils/deploy')
 const bconsole = require('./console')
 const { cacheAll } = require('./utils/reactionroles')
-
-if (!fs.existsSync('./config.json')) {
-  console.log("Looks like you haven't set up the bot yet! Please run 'npm run setup' and try again.")
-  process.exit()
-}
+const config = require('./utils/config')
+const { token } = config.get()
 
 if (!fs.existsSync('./databases')) fs.mkdirSync('./databases')
 
@@ -67,5 +64,4 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 })
 
-const { token } = require('./config.json')
 client.login(token)

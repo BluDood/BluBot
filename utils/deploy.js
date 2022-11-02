@@ -1,11 +1,11 @@
+const fs = require('fs')
+const crypto = require('crypto')
+const { Routes, REST } = require('discord.js')
 const sleep = require('./sleep')
+const config = require('./config')
+const { guildId, token } = config.get()
 
 module.exports = id => {
-  const fs = require('fs')
-  const crypto = require('crypto')
-  const { Routes, REST } = require('discord.js')
-  const { guildId, token } = require('../config.json')
-
   const commands = []
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 
@@ -13,6 +13,7 @@ module.exports = id => {
     const command = require(`../commands/${file}`)
     commands.push(command.data.toJSON())
   }
+
   const commandsHash = crypto.createHash('sha256').update(JSON.stringify(commands)).digest('hex')
   if (!fs.existsSync('./databases/commandsHash.txt')) fs.writeFileSync('./databases/commandsHash.txt', '')
   if (fs.readFileSync('./databases/commandsHash.txt', 'utf-8') === commandsHash) return

@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, resolveColor } = require('discord.js')
 const fs = require('fs')
 const checkUserPerms = require('../utils/checkUserPerms')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 
 if (!fs.existsSync('./databases/tags.json')) fs.writeFileSync('./databases/tags.json', '{}')
 const tags = JSON.parse(fs.readFileSync('./databases/tags.json'))
@@ -77,7 +75,7 @@ module.exports = {
       const embed = {
         title: `Tags in ${interaction.guild.name}`,
         description: `**${tagList.join('\n')}**`,
-        color: resolveColor(accent),
+        color: config.getColor('accent'),
         footer: {
           text: `${tagList.length} tag${tagList.length === 1 ? '' : 's'}`
         }
@@ -96,7 +94,7 @@ module.exports = {
       const embed = {
         title: name,
         description: tags[name],
-        color: resolveColor(accent)
+        color: config.getColor('accent')
       }
       user ? interaction.reply({ content: `<@${user.id}>, take a look at this!`, embeds: [embed] }) : interaction.reply({ embeds: [embed] })
     } else if (subcommand === 'edit') {

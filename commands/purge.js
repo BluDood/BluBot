@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 const checkUserPerms = require('../utils/checkUserPerms')
 const log = require('../utils/log')
 
@@ -44,7 +42,7 @@ module.exports = {
         embeds: [
           {
             title: `Purged ${amount} message${amount === 1 ? '' : 's'} in #${channel.name}!`,
-            color: accent
+            color: config.getColor('accent')
           }
         ],
         ephemeral: true
@@ -71,7 +69,7 @@ module.exports = {
         embeds: [
           {
             title: `Purged ${amount} message${amount == 1 ? '' : 's'} by ${user.tag} in #${channel.name}!`,
-            color: accent
+            color: config.getColor('accent')
           }
         ],
         ephemeral: true

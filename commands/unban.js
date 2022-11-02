@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 const checkUserPerms = require('../utils/checkUserPerms')
 const log = require('../utils/log')
 
@@ -24,7 +22,7 @@ module.exports = {
       embeds: [
         {
           title: `${target.tag} unbanned.`,
-          color: accent
+          color: config.getColor('accent')
         }
       ],
       ephemeral: true

@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, resolveColor } = require('discord.js')
 const reactionroles = require('../utils/reactionroles')
 const checkUserPerms = require('../utils/checkUserPerms')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -82,7 +80,7 @@ module.exports = {
       const roles = reactionroles.getAll()
       const embed = {
         title: `Reaction roles in ${interaction.guild.name}`,
-        color: resolveColor(accent),
+        color: config.getColor('accent'),
         description: roles
           .map(r => `[Jump to Message](https://discord.com/channels/${interaction.guild.id}/${r.channelId}/${r.id})\n${r.roles.map(ro => `${ro.emojiName}: <@&${ro.role}>`).join('\n')}`)
           .join('\n\n')

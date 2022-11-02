@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const config = require('../utils/config')
 const axios = require('axios').default
 
 module.exports = {
@@ -22,7 +20,7 @@ module.exports = {
     if (!res?.data?.success) return interaction.editReply('An error has occured!')
     if (res.status === 404) return interaction.editReply('Could not find that word!')
     const embed = {
-      color: accent,
+      color: config.getColor('accent'),
       title: res.data.result[0].word,
       description: res.data.result[0].description
     }

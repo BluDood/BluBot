@@ -1,7 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js')
-const {
-  customization: { accent }
-} = require('../config.json')
+const { SlashCommandBuilder, PermissionsBitField } = require('discord.js')
+const config = require('../utils/config')
 const checkUserPerms = require('../utils/checkUserPerms')
 const log = require('../utils/log')
 
@@ -18,16 +16,16 @@ module.exports = {
       })
     const channel = interaction.options.getChannel('channel') || interaction.channel
     if (!channel) return interaction.reply('I cannot access that channel!')
-    if (!channel.permissionsFor(interaction.guild.roles.everyone).has('SEND_MESSAGES')) return interaction.reply('This channel is already locked!')
+    if (!channel.permissionsFor(interaction.guild.roles.everyone).has(PermissionsBitField.Flags.SendMessages)) return interaction.reply('This channel is already locked!')
     try {
       channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
-        SEND_MESSAGES: false
+        [PermissionsBitField.Flags.SendMessages]: false
       })
       await interaction.reply({
         embeds: [
           {
             title: `#${channel.name} locked.`,
-            color: accent
+            color: config.getColor('accent')
           }
         ]
       })
