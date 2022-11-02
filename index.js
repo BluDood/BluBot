@@ -2,6 +2,7 @@ const { Client, Collection, GatewayIntentBits, Events } = require('discord.js')
 const fs = require('fs')
 const deploy = require('./utils/deploy')
 const bconsole = require('./console')
+const { cacheAll } = require('./utils/reactionroles')
 
 if (!fs.existsSync('./config.json')) {
   console.log("Looks like you haven't set up the bot yet! Please run 'npm run setup' and try again.")
@@ -11,7 +12,7 @@ if (!fs.existsSync('./config.json')) {
 if (!fs.existsSync('./databases')) fs.mkdirSync('./databases')
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions]
 })
 
 client.commands = new Collection()
@@ -25,6 +26,7 @@ bconsole.init(process.argv[2])
 client.once(Events.ClientReady, async c => {
   bconsole.motd(c.user.tag)
   deploy(c.user.id)
+  cacheAll(client)
 })
 
 for (const eventFile of fs.readdirSync('./events').filter(file => file.endsWith('.js'))) {
