@@ -32,6 +32,13 @@ module.exports = {
         .setDescription('Get a tag')
         .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true).setAutocomplete(true))
         .addUserOption(option => option.setName('mention').setDescription('User to mention'))
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('edit')
+        .setDescription('Edit a tag')
+        .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true))
+        .addStringOption(option => option.setName('content').setDescription('The new content of the tag').setRequired(true))
     ),
 
   async execute(interaction) {
@@ -92,6 +99,20 @@ module.exports = {
         color: resolveColor(accent)
       }
       user ? interaction.reply({ content: `<@${user.id}>, take a look at this!`, embeds: [embed] }) : interaction.reply({ embeds: [embed] })
+    } else if (subcommand === 'edit') {
+      if (!checkUserPerms(interaction)) {
+        return interaction.reply({
+          content: 'You do not have permission to do that!',
+          ephemeral: true
+        })
+      }
+      const name = interaction.options.getString('name')
+      const content = interaction.options.getString('content')
+      if (!tags[name]) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
+
+      tags[name] = content
+      fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
+      interaction.reply({ content: `Edited tag ${name}.`, ephemeral: true })
     }
   }
 }
