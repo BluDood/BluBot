@@ -6,10 +6,6 @@ const sleep = require('../utils/sleep')
 module.exports = {
   event: Events.MessageDelete,
   async listener(message) {
-    if (!fs.existsSync('./databases/deleted.txt')) fs.writeFileSync('./databases/deleted.txt', 'false', 'utf-8')
-    if (fs.readFileSync('./databases/deleted.txt', 'utf-8') === 'true') {
-      return fs.writeFileSync('./databases/deleted.txt', 'false', 'utf-8')
-    }
     if (!message.guild) return
     await sleep(1000)
     const fetchedLogs = await message.guild.fetchAuditLogs({
