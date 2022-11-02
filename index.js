@@ -38,6 +38,7 @@ for (const autoCompleteFile of fs.readdirSync('./autocomplete').filter(file => f
   const autoComplete = require(`./autocomplete/${autoCompleteFile}`)
   client.on(Events.InteractionCreate, interaction => {
     if (!interaction.isAutocomplete()) return;
+    if (interaction.commandName !== autoComplete.id) return;
     autoComplete.execute(interaction)
   })
 }
