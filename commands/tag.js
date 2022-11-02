@@ -1,5 +1,3 @@
-// Make a tag command that has 4 subcommands: add, remove, list and get
-
 const { SlashCommandBuilder } = require( "discord.js" );
 const fs = require( "fs" );
 
@@ -8,6 +6,7 @@ if ( !fs.existsSync( "./databases/tags.json" ) ) {
 }
 
 const tags = JSON.parse( fs.readFileSync( "./databases/tags.json" ) );
+const checkUserPerms = require( "../utils/checkUserPerms" );
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,14 +23,14 @@ module.exports = {
             subcommand
                 .setName( "remove" )
                 .setDescription( "Remove a tag" )
-                .addStringOption( ( option ) => option.setName( "name" ).setDescription( "The name of the tag" ).setRequired( true ) )
+                .addStringOption( ( option ) => option.setName( "name" ).setDescription( "The name of the tag" ).setRequired( true ).setAutocomplete( true ) )
         )
         .addSubcommand( ( subcommand ) => subcommand.setName( "list" ).setDescription( "List all tags" ) )
         .addSubcommand( ( subcommand ) =>
             subcommand
                 .setName( "get" )
                 .setDescription( "Get a tag" )
-                .addStringOption( ( option ) => option.setName( "name" ).setDescription( "The name of the tag" ).setRequired( true ) )
+                .addStringOption( ( option ) => option.setName( "name" ).setDescription( "The name of the tag" ).setRequired( true ).setAutocomplete( true ) )
         ),
 
     async execute ( interaction ) {
@@ -74,6 +73,11 @@ module.exports = {
         } else if ( subcommand === "get" ) {
             const name = interaction.options.getString( "name" );
             if ( !tags[ name ] ) {
+                // Shhhh, you didn't see anything.
+                if (name === "sbeve is amazing") {
+                    return interaction.reply( { content: "I know, right!", ephemeral: true } );
+                }
+
                 return interaction.reply( { content: `A tag with the name ${ name } does not exist.`, ephemeral: true } );
             }
             interaction.reply( { content: tags[ name ] } );
