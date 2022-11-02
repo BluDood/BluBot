@@ -69,8 +69,11 @@ module.exports = {
 
       const embed = {
         title: `Tags in ${interaction.guild.name}`,
-        description: tagList.join('\n'),
-        color: resolveColor(accent)
+        description: `**${tagList.join('\n')}**`,
+        color: resolveColor(accent),
+        footer: {
+          text: `${tagList.length} tag${tagList.length === 1 ? '' : 's'}`
+        }
       }
       interaction.reply({ embeds: [embed], ephemeral: true })
     } else if (subcommand === 'get') {
