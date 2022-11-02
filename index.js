@@ -34,12 +34,22 @@ for (const eventFile of fs.readdirSync('./events').filter(file => file.endsWith(
   client.on(event.event, event.listener)
 }
 
+for (const autoCompleteFile of fs.readdirSync('./autocomplete').filter(file => file.endsWith('.js'))) {
+  const autoComplete = require(`./autocomplete/${autoCompleteFile}`)
+  client.on(Events.InteractionCreate, interaction => {
+    if (!interaction.isAutocomplete()) return;
+    if (interaction.commandName !== autoComplete.id) return;
+    autoComplete.execute(interaction)
+  })
+}
+
 client.on(Events.Error, error => {
   console.log(error)
 })
 
 client.on(Events.InteractionCreate, async interaction => {
-  if (interaction.isButton()) return
+  if (interaction.isButton()) return;
+  if (interaction.isAutocomplete()) return;
   const command = client.commands.get(interaction.commandName)
   if (command) {
     try {
