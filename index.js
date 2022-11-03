@@ -1,7 +1,7 @@
 const { Client, Collection, GatewayIntentBits, Events } = require('discord.js')
 const fs = require('fs')
 const deploy = require('./utils/deploy')
-const bconsole = require('./console')
+const con = require('./utils/console')
 const { cacheAll } = require('./utils/reactionroles')
 const config = require('./utils/config')
 const { token } = config.get()
@@ -40,16 +40,14 @@ for (const eventFile of fs.readdirSync('./events').filter(file => file.endsWith(
   client.on(event.event, event.listener)
 }
 
-bconsole.init(process.argv[2])
+con.init()
 client.once(Events.ClientReady, async c => {
-  bconsole.motd(c.user.tag)
+  con.motd(c.user.tag)
   deploy(c.user.id)
   cacheAll(client)
 })
 
-client.on(Events.Error, error => {
-  console.log(error)
-})
+client.on(Events.Error, err => console.error(err))
 
 client.on(Events.InteractionCreate, async interaction => {
   if (interaction.isCommand()) {

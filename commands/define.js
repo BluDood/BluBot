@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js')
 const config = require('../utils/config')
-const axios = require('axios').default
+const { default: axios } = require('axios')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,7 +8,7 @@ module.exports = {
     .setDescription('Define a word with Urban Dictionary!')
     .addStringOption(option => option.setName('query').setDescription('Word to search for').setRequired(true)),
   async execute(interaction) {
-    // my api ;)
+    // https://guides.bludood.com/apis/urban-dictionary-api
     const api = 'https://urbanapi.up.railway.app'
     const query = interaction.options.getString('query')
     interaction.deferReply()

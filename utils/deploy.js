@@ -23,9 +23,6 @@ module.exports = id => {
 
   rest
     .put(Routes.applicationGuildCommands(id, guildId), { body: commands })
-    .then(() =>
-      // so it doesn't interfere with the console animation
-      sleep(1000).then(() => console.log('Successfully updated guild commands.'))
-    )
+    .then(() => sleep(1000).then(() => console.log('Successfully updated guild commands.')))
     .catch(console.error)
 }

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "setup": "node setup.js"
+    "setup": "node utils/setup.js"
   },
   "author": "BluDood",
   "license": "ISC",

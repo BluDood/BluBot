@@ -7,7 +7,7 @@ function checkConfig() {
     process.exit()
   }
   try {
-    JSON.parse(fs.readFileSync('./databases/reactionroles.json'))
+    JSON.parse(fs.readFileSync('./config.json'))
   } catch {
     console.log("Looks like your config file has been corrupted. Please regenerate it with 'npm run setup' and try again.")
     process.exit()
