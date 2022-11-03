@@ -82,7 +82,10 @@ module.exports = {
         title: `Reaction roles in ${interaction.guild.name}`,
         color: config.getColor('accent'),
         description: roles
-          .map(r => `[Jump to Message](https://discord.com/channels/${interaction.guild.id}/${r.channelId}/${r.id})\n${r.roles.map(ro => `${ro.emojiName}: <@&${ro.role}>`).join('\n')}`)
+          .map(
+            r =>
+              `[Jump to Message](https://discord.com/channels/${interaction.guild.id}/${r.channelId}/${r.id})\n${r.roles.map(ro => `${ro.emojiName}: <@&${ro.role}>`).join('\n')}`
+          )
           .join('\n\n')
       }
       return interaction.reply({

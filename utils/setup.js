@@ -48,12 +48,17 @@ function readline() {
     current.customization.accent = await readline()
     console.log('Now enter a HEX color you would like as a "good" color. This will apply to embeds which remove a moderation. Leave blank for default.')
     current.customization.colors.good = await readline()
-    console.log('Now enter a HEX color you would like as a "medium" color. This will apply to embeds which add a semi-fatal moderation like a kick or timeout. Leave blank for default.')
+    console.log(
+      'Now enter a HEX color you would like as a "medium" color. This will apply to embeds which add a semi-fatal moderation like a kick or timeout. Leave blank for default.'
+    )
     current.customization.colors.medium = await readline()
     console.log('Now enter a HEX color you would like as a "bad" color. This will apply to embeds which add a fatal moderation like a ban. Leave blank for default.')
     current.customization.colors.bad = await readline()
   }
-  console.log((customColors === 'y' ? '' : "Alright, i'll use the default colors. ") + 'Now, time to set up your moderation roles. Enter all your moderation role IDs here, separated by a comma.')
+  console.log(
+    (customColors === 'y' ? '' : "Alright, i'll use the default colors. ") +
+      'Now, time to set up your moderation roles. Enter all your moderation role IDs here, separated by a comma.'
+  )
   current.modRoles = (await readline()).split(',').map(r => r.trim())
   console.log("Got that. Now enter the channel you'd like me to send logs to:")
   current.channels.logs = (await readline()).trim()

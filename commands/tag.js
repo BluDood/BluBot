@@ -1,25 +1,15 @@
-const { SlashCommandBuilder, resolveColor, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js')
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js')
 const fs = require('fs')
 const checkUserPerms = require('../utils/checkUserPerms')
 const config = require('../utils/config')
 
 if (!fs.existsSync('./databases/tags.json')) fs.writeFileSync('./databases/tags.json', '{}')
-let tags = JSON.parse(fs.readFileSync('./databases/tags.json', "utf-8"))
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('tag')
     .setDescription('Manage tags')
-    .addSubcommand(subcommand =>
-      subcommand
-        .setName('add')
-        .setDescription('Add a tag')
-    )
-    .addSubcommand(subcommand => 
-      subcommand
-        .setName('add-with-modal')
-        .setDescription('Add a tag with a modal')
-      )
+    .addSubcommand(subcommand => subcommand.setName('add').setDescription('Add a tag'))
     .addSubcommand(subcommand =>
       subcommand
         .setName('remove')
@@ -38,12 +28,12 @@ module.exports = {
       subcommand
         .setName('edit')
         .setDescription('Edit a tag')
-        .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true))
-        .addStringOption(option => option.setName('content').setDescription('The new content of the tag').setRequired(true))
-        .addStringOption(option => option.setName('image').setDescription('URL of image to attach'))
+        .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true).setAutocomplete(true))
     ),
 
   async execute(interaction) {
+    const tags = JSON.parse(fs.readFileSync('./databases/tags.json', 'utf-8'))
+
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === 'add') {
       if (!checkUserPerms(interaction)) {
@@ -52,15 +42,13 @@ module.exports = {
           ephemeral: true
         })
       }
-      
-      const modal = new ModalBuilder()
-        .setTitle('Add a tag')
-        .setCustomId('add-tag')
+
+      const modal = new ModalBuilder().setTitle('Add a tag').setCustomId('add-tag')
 
       const nameInput = new TextInputBuilder()
         .setCustomId('name')
         .setPlaceholder('Name')
-        .setLabel("Name")
+        .setLabel('Name')
         .setMinLength(1)
         .setMaxLength(32)
         .setRequired(true)
@@ -69,7 +57,7 @@ module.exports = {
       const contentInput = new TextInputBuilder()
         .setCustomId('content')
         .setPlaceholder('Content')
-        .setLabel("Content")
+        .setLabel('Content')
         .setMinLength(1)
         .setMaxLength(2000)
         .setRequired(true)
@@ -77,18 +65,17 @@ module.exports = {
 
       const imageInput = new TextInputBuilder()
         .setCustomId('image')
-        .setLabel("Image")
+        .setLabel('Image')
         .setPlaceholder('Image URL')
         .setMinLength(1)
         .setMaxLength(2000)
         .setStyle(TextInputStyle.Short)
         .setRequired(false)
-      
+
       modal.addComponents(new ActionRowBuilder().addComponents(nameInput), new ActionRowBuilder().addComponents(contentInput), new ActionRowBuilder().addComponents(imageInput))
 
       await interaction.showModal(modal)
-    }
-     else if (subcommand === 'remove') {
+    } else if (subcommand === 'remove') {
       if (!checkUserPerms(interaction)) {
         return interaction.reply({
           content: "Just don't use that tag then ¯\\_(ツ)_/¯ (You don't have permission to do that.)",
@@ -121,7 +108,9 @@ module.exports = {
         // Shhhh, you didn't see anything.
         // i certainly did not ;)
         // Sorry for changing this again the lack of the question mark was really getting to me!
+        // might add my own one too then :)
         if (name === 'sbeve is amazing') return interaction.reply({ content: 'I know, right?!', ephemeral: true })
+        if (name === 'bludood is the best') return interaction.reply({ content: 'very true', ephemeral: true })
 
         return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
       }
@@ -142,20 +131,43 @@ module.exports = {
         })
       }
       const name = interaction.options.getString('name')
-      const content = interaction.options.getString('content')
-      const image = interaction.options.getString('image')
       if (!tags[name]) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
 
-      tags[name] = {
-        content: content,
-        image: image || tags[name].image
-      }
-      fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
-      interaction.reply({ content: `Edited tag ${name}.`, ephemeral: true })
-    }
-  },
+      const modal = new ModalBuilder().setTitle('Edit a tag').setCustomId('edit-tag')
 
-  updateTags(newTags) {
-    tags = newTags
+      const nameInput = new TextInputBuilder()
+        .setCustomId('name')
+        .setPlaceholder('Name')
+        .setLabel('Name')
+        .setMinLength(1)
+        .setMaxLength(32)
+        .setRequired(true)
+        .setStyle(TextInputStyle.Short)
+        .setValue(name)
+
+      const contentInput = new TextInputBuilder()
+        .setCustomId('content')
+        .setPlaceholder('Content')
+        .setLabel('Content')
+        .setMinLength(1)
+        .setMaxLength(2000)
+        .setRequired(true)
+        .setStyle(TextInputStyle.Paragraph)
+        .setValue(tags[name].content)
+
+      const imageInput = new TextInputBuilder()
+        .setCustomId('image')
+        .setLabel('New image')
+        .setPlaceholder('New image URL')
+        .setMinLength(1)
+        .setMaxLength(2000)
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false)
+        .setValue(tags[name].image)
+
+      modal.addComponents(new ActionRowBuilder().addComponents(nameInput), new ActionRowBuilder().addComponents(contentInput), new ActionRowBuilder().addComponents(imageInput))
+
+      await interaction.showModal(modal)
+    }
   }
 }
