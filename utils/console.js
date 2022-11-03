@@ -19,7 +19,6 @@ async function motd(tag) {
   }
   tag && console.log(`Welcome to BluBot! Your bot (${tag}) is now running.`)
   console.log(minimal ? 'Press h and hit Enter for help.' : 'Press h for help.')
-  console.log(process.argv)
 }
 
 const commands = {
