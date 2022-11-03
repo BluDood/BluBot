@@ -16,6 +16,7 @@ module.exports = {
         .setDescription('Add a tag')
         .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true))
         .addStringOption(option => option.setName('content').setDescription('The content of the tag').setRequired(true))
+        .addStringOption(option => option.setName('image').setDescription('URL of image to attach'))
     )
     .addSubcommand(subcommand =>
       subcommand
@@ -37,6 +38,7 @@ module.exports = {
         .setDescription('Edit a tag')
         .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true))
         .addStringOption(option => option.setName('content').setDescription('The new content of the tag').setRequired(true))
+        .addStringOption(option => option.setName('image').setDescription('URL of image to attach'))
     ),
 
   async execute(interaction) {
@@ -50,9 +52,13 @@ module.exports = {
       }
       const name = interaction.options.getString('name')
       const content = interaction.options.getString('content')
+      const image = interaction.options.getString('image')
       if (tags[name]) return interaction.reply({ content: `A tag with the name ${name} already exists.`, ephemeral: true })
 
-      tags[name] = content
+      tags[name] = {
+        content,
+        image
+      }
       fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
       interaction.reply({ content: `Added tag ${name}.`, ephemeral: true })
     } else if (subcommand === 'remove') {
@@ -93,8 +99,11 @@ module.exports = {
       }
       const embed = {
         title: name,
-        description: tags[name],
-        color: config.getColor('accent')
+        description: tags[name].content,
+        color: config.getColor('accent'),
+        image: {
+          url: tags[name].image
+        }
       }
       user ? interaction.reply({ content: `<@${user.id}>, take a look at this!`, embeds: [embed] }) : interaction.reply({ embeds: [embed] })
     } else if (subcommand === 'edit') {
@@ -106,9 +115,13 @@ module.exports = {
       }
       const name = interaction.options.getString('name')
       const content = interaction.options.getString('content')
+      const image = interaction.options.getString('image')
       if (!tags[name]) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
 
-      tags[name] = content
+      tags[name] = {
+        content: content,
+        image: image || tags[name].image
+      }
       fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
       interaction.reply({ content: `Edited tag ${name}.`, ephemeral: true })
     }
