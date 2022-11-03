@@ -1,10 +1,10 @@
-const { SlashCommandBuilder, resolveColor } = require('discord.js')
+const { SlashCommandBuilder, resolveColor, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js')
 const fs = require('fs')
 const checkUserPerms = require('../utils/checkUserPerms')
 const config = require('../utils/config')
 
 if (!fs.existsSync('./databases/tags.json')) fs.writeFileSync('./databases/tags.json', '{}')
-const tags = JSON.parse(fs.readFileSync('./databases/tags.json'))
+let tags = JSON.parse(fs.readFileSync('./databases/tags.json', "utf-8"))
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,10 +14,12 @@ module.exports = {
       subcommand
         .setName('add')
         .setDescription('Add a tag')
-        .addStringOption(option => option.setName('name').setDescription('The name of the tag').setRequired(true))
-        .addStringOption(option => option.setName('content').setDescription('The content of the tag').setRequired(true))
-        .addStringOption(option => option.setName('image').setDescription('URL of image to attach'))
     )
+    .addSubcommand(subcommand => 
+      subcommand
+        .setName('add-with-modal')
+        .setDescription('Add a tag with a modal')
+      )
     .addSubcommand(subcommand =>
       subcommand
         .setName('remove')
@@ -50,18 +52,43 @@ module.exports = {
           ephemeral: true
         })
       }
-      const name = interaction.options.getString('name')
-      const content = interaction.options.getString('content')
-      const image = interaction.options.getString('image')
-      if (tags[name]) return interaction.reply({ content: `A tag with the name ${name} already exists.`, ephemeral: true })
+      
+      const modal = new ModalBuilder()
+        .setTitle('Add a tag')
+        .setCustomId('add-tag')
 
-      tags[name] = {
-        content,
-        image
-      }
-      fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
-      interaction.reply({ content: `Added tag ${name}.`, ephemeral: true })
-    } else if (subcommand === 'remove') {
+      const nameInput = new TextInputBuilder()
+        .setCustomId('name')
+        .setPlaceholder('Name')
+        .setLabel("Name")
+        .setMinLength(1)
+        .setMaxLength(32)
+        .setRequired(true)
+        .setStyle(TextInputStyle.Short)
+
+      const contentInput = new TextInputBuilder()
+        .setCustomId('content')
+        .setPlaceholder('Content')
+        .setLabel("Content")
+        .setMinLength(1)
+        .setMaxLength(2000)
+        .setRequired(true)
+        .setStyle(TextInputStyle.Paragraph)
+
+      const imageInput = new TextInputBuilder()
+        .setCustomId('image')
+        .setLabel("Image")
+        .setPlaceholder('Image URL')
+        .setMinLength(1)
+        .setMaxLength(2000)
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false)
+      
+      modal.addComponents(new ActionRowBuilder().addComponents(nameInput), new ActionRowBuilder().addComponents(contentInput), new ActionRowBuilder().addComponents(imageInput))
+
+      await interaction.showModal(modal)
+    }
+     else if (subcommand === 'remove') {
       if (!checkUserPerms(interaction)) {
         return interaction.reply({
           content: "Just don't use that tag then ¯\\_(ツ)_/¯ (You don't have permission to do that.)",
@@ -93,7 +120,8 @@ module.exports = {
       if (!tags[name]) {
         // Shhhh, you didn't see anything.
         // i certainly did not ;)
-        if (name === 'sbeve is amazing') return interaction.reply({ content: 'I know, right!', ephemeral: true })
+        // Sorry for changing this again the lack of the question mark was really getting to me!
+        if (name === 'sbeve is amazing') return interaction.reply({ content: 'I know, right?!', ephemeral: true })
 
         return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
       }
@@ -125,5 +153,9 @@ module.exports = {
       fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
       interaction.reply({ content: `Edited tag ${name}.`, ephemeral: true })
     }
+  },
+
+  updateTags(newTags) {
+    tags = newTags
   }
 }
