@@ -13,7 +13,8 @@ const current = {
   },
   modRoles: [],
   channels: {
-    logs: null
+    logs: null,
+    welcome: null
   }
 }
 
@@ -53,14 +54,17 @@ function readline() {
     current.customization.colors.bad = await readline()
   }
   console.log((customColors === 'y' ? '' : "Alright, i'll use the default colors. ") + 'Now, time to set up your moderation roles. Enter all your moderation role IDs here, separated by a comma.')
-  current.modRoles = (await readline()).split(',').map(r => parseInt(r.trim()))
+  current.modRoles = (await readline()).split(',').map(r => r.trim())
   console.log("Got that. Now enter the channel you'd like me to send logs to:")
-  current.channels.logs = parseInt((await readline()).trim())
+  current.channels.logs = (await readline()).trim()
+  console.log("Now enter the channel you'd like me to send welcome message to. Leave blank to disable.")
+  current.channels.welcome = (await readline()).trim()
   console.log(`
 Guild ID: ${current.guildId}
 Bot token: ${current.token}
 Moderator Roles: ${current.modRoles.join(', ')}
 Logging channel: ${current.channels.logs}
+Welcome channel: ${current.channels.welcome}
 Does this look correct? [Y/n]
   `)
   const correct = (await readline()).toLowerCase()
