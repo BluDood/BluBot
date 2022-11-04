@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js')
-const fs = require('fs')
 const checkUserPerms = require('../utils/checkUserPerms')
 const config = require('../utils/config')
-
-if (!fs.existsSync('./databases/tags.json')) fs.writeFileSync('./databases/tags.json', '{}')
+const tag = require('../utils/tag.js')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -32,8 +30,6 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const tags = JSON.parse(fs.readFileSync('./databases/tags.json', 'utf-8'))
-
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === 'add') {
       if (!checkUserPerms(interaction)) {
@@ -83,13 +79,12 @@ module.exports = {
         })
       }
       const name = interaction.options.getString('name')
-      if (!tags[name]) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
+      if (!tag.get(name)) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
 
-      delete tags[name]
-      fs.writeFileSync('./databases/tags.json', JSON.stringify(tags, null, 4))
+      tag.remove(name)
       interaction.reply({ content: `Removed tag ${name}.`, ephemeral: true })
     } else if (subcommand === 'list') {
-      const tagList = Object.keys(tags)
+      const tagList = Object.keys(tag.getAll())
       if (tagList.length === 0) return interaction.reply({ content: 'There are no tags.', ephemeral: true })
 
       const embed = {
@@ -104,7 +99,8 @@ module.exports = {
     } else if (subcommand === 'get') {
       const name = interaction.options.getString('name')
       const user = interaction.options.getUser('mention')
-      if (!tags[name]) {
+      const foundTag = tag.get(name)
+      if (!foundTag) {
         // Shhhh, you didn't see anything.
         // i certainly did not ;)
         // Sorry for changing this again the lack of the question mark was really getting to me!
@@ -116,10 +112,10 @@ module.exports = {
       }
       const embed = {
         title: name,
-        description: tags[name].content,
+        description: foundTag.content,
         color: config.getColor('accent'),
         image: {
-          url: tags[name].image
+          url: foundTag.image
         }
       }
       user ? interaction.reply({ content: `<@${user.id}>, take a look at this!`, embeds: [embed] }) : interaction.reply({ embeds: [embed] })
@@ -131,7 +127,8 @@ module.exports = {
         })
       }
       const name = interaction.options.getString('name')
-      if (!tags[name]) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
+      const foundTag = tag.get(name)
+      if (!foundTag) return interaction.reply({ content: `A tag with the name ${name} does not exist.`, ephemeral: true })
 
       const modal = new ModalBuilder().setTitle('Edit a tag').setCustomId('edit-tag')
 
@@ -153,7 +150,7 @@ module.exports = {
         .setMaxLength(2000)
         .setRequired(true)
         .setStyle(TextInputStyle.Paragraph)
-        .setValue(tags[name].content)
+        .setValue(foundTag.content)
 
       const imageInput = new TextInputBuilder()
         .setCustomId('image')
@@ -163,7 +160,7 @@ module.exports = {
         .setMaxLength(2000)
         .setStyle(TextInputStyle.Short)
         .setRequired(false)
-        .setValue(tags[name].image)
+        .setValue(foundTag.image)
 
       modal.addComponents(new ActionRowBuilder().addComponents(nameInput), new ActionRowBuilder().addComponents(contentInput), new ActionRowBuilder().addComponents(imageInput))
 
