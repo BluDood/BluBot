@@ -49,7 +49,7 @@ module.exports = (guild, type, info) => {
         },
         {
           name: 'Message',
-          value: info.content
+          value: info.content || 'Unknown'
         },
         {
           name: 'Channel',
