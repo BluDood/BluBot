@@ -2,13 +2,13 @@ const fs = require('fs')
 
 function ensureDatabase() {
   const exists = fs.existsSync('./databases/tags.json')
-  if (!exists) fs.writeFileSync('./databases/tags.json', '[]')
+  if (!exists) fs.writeFileSync('./databases/tags.json', '{}')
   try {
     JSON.parse(fs.readFileSync('./databases/tags.json'))
   } catch {
     fs.writeFileSync('./databases/tags.bak.json', fs.readFileSync('./databases/tags.json'))
     console.log('Your tags database was corrupted, so we had to reset it. You can find a backup in ./databases/tags.bak.json')
-    fs.writeFileSync('./databases/tags.json', '[]')
+    fs.writeFileSync('./databases/tags.json', '{}')
   }
 }
 
