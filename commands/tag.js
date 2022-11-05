@@ -46,7 +46,7 @@ module.exports = {
         .setPlaceholder('Name')
         .setLabel('Name')
         .setMinLength(1)
-        .setMaxLength(32)
+        .setMaxLength(99)
         .setRequired(true)
         .setStyle(TextInputStyle.Short)
 
@@ -137,7 +137,7 @@ module.exports = {
         .setPlaceholder('Name')
         .setLabel('Name')
         .setMinLength(1)
-        .setMaxLength(32)
+        .setMaxLength(99)
         .setRequired(true)
         .setStyle(TextInputStyle.Short)
         .setValue(name)
